@@ -1,0 +1,10 @@
+/__pycache__
+/build
+/dist
+/finalized
+/questions
+/app.log
+/main.spec
+/xlrd.spec
+/mypy.cache
+/test

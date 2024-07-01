@@ -6,7 +6,7 @@ Technologies:
 * Pure pandas implementation
 * Scalable architecture (at least I'm tryin')
 * Flet framework (Flutter app builder)
-Future plans and todos:
+### Future plans and todos:
 * Rebuild with web and docker-compose containerization
 
 Also note for those who will find this repo: 

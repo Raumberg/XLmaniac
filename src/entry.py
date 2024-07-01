@@ -9,8 +9,8 @@ from src.interfaces.paths import Extension
 def execute() -> None:
     lg.info('Executing |main|')
     try:
-        path = r"C:\Users\nikita.shestopalov\Documents\PY\conture"
-        file = r"fasp-1"
+        path = r"<path>"
+        file = r"<extension>"
         extension = r".xlsx"
 
         file_reader = FileReader(path, file, extension)

@@ -24,7 +24,7 @@ def expect(generic: Some[T], msg: str = "") -> T:
         error_msg = f"Value is null at |{caller_info}| fn"
         if msg:
             error_msg += f": {msg}"
-        error_msg += traceback.format_exc()
+        error_msg += traceback.format_exc().strip()
         raise NullException(error_msg)
     return generic
 

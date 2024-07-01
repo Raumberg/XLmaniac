@@ -23,6 +23,7 @@ class PhoneDecoder(Decoder):
                 expect(self._process_multiple_phones(), "Multiple phones decoder failed | ")
             else:
                 return expect(self._zaim_fetch(strategy), "Zaim phone fetch failed | ")
+            self._clean_up_phone_numbers()
         except Exception as ex:
             lg.warning('Could not decode phone information')
             lg.error(f'Traceback: {ex}')
@@ -36,12 +37,7 @@ class PhoneDecoder(Decoder):
             lg.info(f'Delimiter is: {delimiter}')
             self.df[Phones.MULTIPLE.value] = self.df[Phones.MULTIPLE.value].astype(str)
             self.df = self.df.apply(lambda row: self.split_phone_numbers(row, delimiter=delimiter), axis=1)
-            self._clean_up_phone_numbers()
-        if Phones.MULTIPLE.value not in self.df.columns:
-            try:
-                _clean_up_phone_numbers(self)
-            except Exception as ex:
-                lg.warning(f"Error caught in phone processing. Err::{e}")
+
 
     def _clean_up_phone_numbers(self) -> None:
         for col in ['p1', 'p2', 'p3', 'p4', 'p5', 'p6', 'p7', 'p8', 'p9', 'p10', 'p11', 'p12', 'p13']:

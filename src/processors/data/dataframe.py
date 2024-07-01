@@ -19,8 +19,9 @@ class DataframeDecoder(Decoder):
         try:
             self.drop_unnamed()
             #self.drop_null_rows()
-        except:
-            lg.error('Could not process dataframe mechanics')
+        except Exception as ex:
+            lg.warning('Could not process dataframe mechanics')
+            lg.error(f"Traceback: {ex}")
         return self.df
 
     def drop_unnamed(self) -> None:

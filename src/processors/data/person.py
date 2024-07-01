@@ -17,11 +17,11 @@ class PersonDecoder(Decoder):
 
     def decode(self) -> pd.DataFrame:
         try:
-            self.df = expect(self._name_splitter(), "Name splitter caused an error: ")
-            self.df = expect(self._sex_finder(), "Sex finder caused an error: ")
-            self.df = expect(self._workplace(), "Workplace finder caused an error: ")
-            self.df = expect(self._mail(), "Mail finder caused an error: ")
-            self.df = expect(self._regliv(), "RegLiv finder caused an error: ")
+            self.df = expect(self._name_splitter(), "Name splitter caused an error | ")
+            self.df = expect(self._sex_finder(), "Sex finder caused an error | ")
+            self.df = expect(self._workplace(), "Workplace finder caused an error | ")
+            self.df = expect(self._mail(), "Mail finder caused an error | ")
+            self.df = expect(self._regliv(), "RegLiv finder caused an error | ")
         except NullException as ex:
             lg.warning('Could not decode personal information')
             lg.error(f'Traceback: {ex}')

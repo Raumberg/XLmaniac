@@ -22,8 +22,9 @@ class RegisterDecoder(Decoder):
             self.df = self._concatenate_ids()
             self.df = self._product_group()
             self.df = self._lifetimes()
-        except:
-            lg.error('Could not decode register information')
+        except Exception as ex:
+            lg.warning('Could not decode register information')
+            lg.error(f'Traceback: {ex}')
         return self.df
 
     def _currency(self) -> pd.DataFrame: 

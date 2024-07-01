@@ -270,18 +270,18 @@ class Body(ft.Container):
                 ft.Row(controls=[CB_PH]),
                 ft.Divider(height=8, color='blue', thickness=3),
                 ft.Row(controls=[
-                    ft.ElevatedButton(
-                        'Upload file',
-                        on_click=lambda event: pick_files_dialog.pick_files(
-                            allow_multiple=False
-                        ),
-                        height=40,
-                        width=120,
-                    ),
-                    ft.ElevatedButton(
-                        'Show Logs',
-                        on_click=show_logs
-                    ),
+                    # ft.ElevatedButton(
+                    #     'Upload file',
+                    #     on_click=lambda event: pick_files_dialog.pick_files(
+                    #         allow_multiple=False
+                    #     ),
+                    #     height=40,
+                    #     width=120,
+                    # ),
+                    # ft.ElevatedButton(
+                    #     'Show Logs',
+                    #     on_click=show_logs
+                    # ),
                     ft.Icon(name=ft.icons.EDIT_DOCUMENT, size=30),
                     ft.ElevatedButton(
                         'Clear Logs',

@@ -23,8 +23,9 @@ class DebtDecoder(Decoder):
             else:
                 self._calculate_total_sum_with_current_debt_and_percent()
             self._set_scheme()
-        except:
-            lg.error('Could not decode debt information')
+        except Exception as ex:
+            lg.warning('Could not decode debt information')
+            lg.error(f'Traceback: {ex}')
         return self.df
 
     def _clean_total_debt(self) -> None:

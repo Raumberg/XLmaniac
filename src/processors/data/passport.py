@@ -44,9 +44,9 @@ class PassportDecoder(Decoder):
                 self.df[Passport.REGION.value] = self.df[Passport.SERIES.value].astype(str).apply(lambda x: REG_REG.get(x[:2], 'UNKNOWN'))
 
             self._clean_up_passport_data()
-        except:
-            lg.error('Could not decode passport information')
-
+        except Exception as ex:
+            lg.warning('Could not decode passport information')
+            lg.error(f'Traceback: {ex}')
         return self.df
 
     def _process_passport_column(self, column_name, func):

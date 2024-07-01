@@ -20,11 +20,12 @@ class PhoneDecoder(Decoder):
     def decode(self, strategy: Phones) -> pd.DataFrame:
         try:
             if strategy == Phones.MULTIPLE.value:
-                expect(self._process_multiple_phones(), "Multiple phones decoder failed")
+                expect(self._process_multiple_phones(), "Multiple phones decoder failed | ")
             else:
-                return expect(self._zaim_fetch(strategy), "Zaim phone fetch failed")
-        except:
-            lg.error('Could not decode phone information')
+                return expect(self._zaim_fetch(strategy), "Zaim phone fetch failed | ")
+        except Exception as ex:
+            lg.warning('Could not decode phone information')
+            lg.error(f'Traceback: {ex}')
         finally:
             return self.df
 

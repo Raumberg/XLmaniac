@@ -19,8 +19,9 @@ class DateDecoder(Decoder):
             self._format_date(Passport.DATE.value)
             self._format_date(Debt.START_DATE.value)
             self._format_date(Debt.END_DATE.value)
-        except:
-            lg.warn("Could not decode dates")
+        except Exception as ex:
+            lg.warning("Could not decode dates")
+            lg.error(f"Traceback: {ex}")
         return self.df
 
     def _format_date(self, column: str) -> None:

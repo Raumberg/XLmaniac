@@ -11,9 +11,11 @@ from win10toast import ToastNotifier
 
 from time import sleep
 
-from app.logics import *
-from app.pochta import *
-from app.phones import *
+#from src.logics import *
+#from src.pochta import *
+#from src.phones import *
+
+from src import entry
 
 def btn_clck(e):
     if CB.value:
@@ -22,14 +24,14 @@ def btn_clck(e):
         #lg.info(f"Excel columns: {columns}")
         #macro.macro(text_value=columns) # execute macro
         lg.info("Executing pochta")
-        execute_pochta()
+        #execute_pochta()
     elif CB_PH.value:
-        execute_phones()
+        #execute_phones()
         lg.info("Executing phones.")
     else:
         lg.info("Executing logics.")
         try:
-            execute()
+            entry.execute()
         except Exception as global_error:
             toast = ToastNotifier()
             toast.show_toast("ERROR!", global_error, duration=10)

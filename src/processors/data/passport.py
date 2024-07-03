@@ -34,7 +34,7 @@ class PassportDecoder(Decoder):
                 self.df[[Passport.SERIES.value, Passport.NUMBER.value]] = self.df[[PassportVariants.DIVISION.value, Passport.SERIES.value]].apply(self.split_passport_number, axis=1)
 
             if Passport.NUMBER.value in self.df.columns:
-                self.df[Passport.NUMBER.value] = self.df[Passport.NUMBER.value].astype(str)#.apply(lambda row: self.add_cumulative_zeroes(row, 5))
+                self.df[Passport.NUMBER.value] = self.df[Passport.NUMBER.value].astype(str)
                 self.df[Passport.TYPE.value] = self.df[Passport.NUMBER.value].astype(str).apply(self.find_passport)
 
             if Passport.SERIES.value in self.df.columns:
@@ -61,7 +61,7 @@ class PassportDecoder(Decoder):
             self.df[Passport.NUMBER.value] = self.df[Passport.NUMBER.value].astype(str).apply(lambda row: self.add_cumulative_zeroes(row, 6))
             lg.info('Seeking nulls in [passport_org]..')
             self.df[Passport.ORGANIZATION.value] = self.df[Passport.ORGANIZATION.value].apply(lambda x: '' if x in ['null', 'NULL'] else x)
-        except Exception as e:
+        except Exception:
             lg.warn('Could not drop nulls in [passport_org]')
             pass
 
@@ -122,12 +122,9 @@ class PassportDecoder(Decoder):
         """
         Adding zeroes with length specified
         """
-        if len(row) == length:
-            return row
-        else:
-            while len(row) < length:
-                row = '0' + row
-                return row
+        while len(row) < length:
+            row = '0' + row
+        return str(row)
 
     @staticmethod
     def check_passport(row: str) -> bool:
@@ -137,7 +134,7 @@ class PassportDecoder(Decoder):
         row = str(row)
         if row[0].isalpha(): 
             return True
-        if len(row) <= 8: #>=
+        if len(row) >= 8: #>=
             return True
         else:
             return False
@@ -145,7 +142,7 @@ class PassportDecoder(Decoder):
     @staticmethod
     def find_passport(row: str) -> str:
         """
-        Mapping passport according to country
+        Mapping passport according to country. In if True, Ru if False
         """
         return 'Паспорт ин. гос.' if PassportDecoder.check_passport(row) else 'Паспорт РФ'
 

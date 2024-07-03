@@ -10,7 +10,7 @@ def execute() -> None:
     lg.info('Executing |main|')
     try:
         path = r"C:\Users\nikita.shestopalov\Documents\PY\conture"
-        file = r"Summit"
+        file = r"fasp-2"
         extension = r".xlsx"
 
         file_reader = FileReader(path, file, extension)

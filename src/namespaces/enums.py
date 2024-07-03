@@ -20,7 +20,7 @@ class NameVariants(Enum):
 
 class Passport(Enum):
     SERIES = 'passport_series'
-    NUMBER = 'passport_number'
+    NUMBER = 'passport_num'
     ORGANIZATION = 'passport_org'
     DATE = 'passport_date'
     TYPE = 'doctype'
@@ -77,6 +77,24 @@ class Phones(Enum):
     REST = "phone_rest"
     CONTACT = "contact_person"
     ZAIM = "phone_num_zaim"
+
+class PhoneEnum(Enum):
+    PHONES = "phones"
+    PHONES_2 = "phones_2"
+    PHONES_3 = "phones_3"
+    PHONES_4 = "phones_4"
+    PHONES_5 = "phones_5"
+    P1 = "p1"
+    P2 = "p2"
+    P3 = "p3"
+    P4 = "p4"
+    P5 = "p5"
+    P6 = "p6"
+    P7 = "p7"
+    P8 = "p8"
+    P9 = "p9"
+    P10 = "p10"
+
 
 class Clients(Enum):
     DEFAULT = 'default'

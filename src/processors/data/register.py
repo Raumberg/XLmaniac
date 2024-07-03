@@ -61,10 +61,10 @@ class RegisterDecoder(Decoder):
 
     def _lifetimes(self) -> pd.DataFrame:
         lg.info('Setting lifetime attributes...')
-        if Register.PLACEMENT.value not in self.df.columns:
-            self.df[Register.PLACEMENT.value] = getattr(Namespace, 'placement')
         if Register.PLACEMENT.value in self.df.columns:
             self.df[Register.PLACEMENT.value] = self.df[Register.PLACEMENT.value].apply(self.extract_int)
+        if Register.PLACEMENT.value not in self.df.columns:
+            self.df[Register.PLACEMENT.value] = 1
         self.df[Register.NAME.value] = getattr(Namespace, 'reg_name')
         self.df[Register.DATE.value] = getattr(Namespace, 'reg_date')
         return self.df

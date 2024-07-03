@@ -30,17 +30,15 @@ class PassportDecoder(Decoder):
             self._process_passport_column(PassportVariants.DEFAULT.value, self.split_passport)
             self._process_passport_column(PassportVariants.FULL.value, self.split_passport_full)
 
-            if Passport.SERIES.value in self.df.columns:
-                self.df[Passport.SERIES.value] = self.df[Passport.SERIES.value].apply(self.format_passport_series)
-                self.df[Passport.NUMBER.value] = self.df[Passport.NUMBER.value].astype(str).apply(self.add_zeroes)
-
             if PassportVariants.DIVISION.value in self.df.columns:
                 self.df[[Passport.SERIES.value, Passport.NUMBER.value]] = self.df[[PassportVariants.DIVISION.value, Passport.SERIES.value]].apply(self.split_passport_number, axis=1)
 
             if Passport.NUMBER.value in self.df.columns:
+                self.df[Passport.NUMBER.value] = self.df[Passport.NUMBER.value].astype(str)#.apply(lambda row: self.add_cumulative_zeroes(row, 5))
                 self.df[Passport.TYPE.value] = self.df[Passport.NUMBER.value].astype(str).apply(self.find_passport)
 
             if Passport.SERIES.value in self.df.columns:
+                self.df[Passport.SERIES.value] = self.df[Passport.SERIES.value].astype(str).apply(self.format_passport_series)
                 self.df[Passport.REGION.value] = self.df[Passport.SERIES.value].astype(str).apply(lambda x: REG_REG.get(x[:2], 'UNKNOWN'))
 
             self._clean_up_passport_data()
@@ -124,7 +122,6 @@ class PassportDecoder(Decoder):
         """
         Adding zeroes with length specified
         """
-        row = str(row)
         if len(row) == length:
             return row
         else:
@@ -153,17 +150,15 @@ class PassportDecoder(Decoder):
         return 'Паспорт ин. гос.' if PassportDecoder.check_passport(row) else 'Паспорт РФ'
 
     @staticmethod
-    def format_passport_series(row) -> str:
+    def format_passport_series(row: str) -> str:
         '''Format passport series from 5555 to 55 55'''
-        if row != '':
-            row = str(int(row))
-        if isinstance(row, str) and (row == '' or row is None):
-            return row
-        elif len(str(row)) == 4 and str(row).isnumeric():
-            return str(row)[0:2] + ' ' + str(row)[2:4]
-        elif len(str(row)) == 5 and str(row).isnumeric():
-            return row
-        elif len(str(int(row))) < 4 and str(row).isnumeric():
-            return '0' + str(int(row))[0:1] + ' ' + str(int(row))[1:3]
-        else:
-            return str(row)
+        if isinstance(row, str):
+            if row == "":
+                return row
+            elif not row.isdigit():
+                return row
+            elif len(row) <= 4:
+                row = PassportDecoder.add_cumulative_zeroes(row, 4)
+                return f"{row[:2]} {row[2:]}"
+            elif len(row) > 4:
+                return row

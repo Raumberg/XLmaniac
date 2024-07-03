@@ -26,6 +26,6 @@ class DateDecoder(Decoder):
 
     def _format_date(self, column: str) -> None:
         if column in self.df.columns:
-            lg.info(f"{column} in columns, formatting dates...")
+            lg.info(f"[{column}] in columns, formatting dates...")
             self.df[column] = pd.to_datetime(self.df[column], format='%d.%m.%Y').dt.date
 

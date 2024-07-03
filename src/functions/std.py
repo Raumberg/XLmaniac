@@ -6,6 +6,7 @@ from functools import wraps
 
 T = TypeVar('T')
 Some = Union[T, None]
+Dynamic = Union[T, Exception]
 
 class NullException(Exception):
     """Raised when a null value is encountered"""
@@ -28,11 +29,11 @@ def expect(generic: Some[T], msg: str = "") -> T:
         raise NullException(error_msg)
     return generic
 
-def unwrap(generic: Some[T]) -> T:
+def unwrap(generic: Some[T], result: Dynamic) -> T:
     match generic:
         case None:
             lg.warning('Unwrap called on None')
-            return 'Null'
+            return result
         case _:
             return generic
 

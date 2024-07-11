@@ -28,6 +28,10 @@ class PersonDecoder(Decoder):
         return self.df
 
     def _name_splitter(self) -> pd.DataFrame:
+        """
+        FIO will be splitted into name, surname, lastname, addname
+        IFO will be splitted into name, surname, lastname, addname, postfix
+        """
         if NameVariants.FIO.value in self.df.columns:
             lg.info('[fio_full] found in columns, splitting names.')
             try:

@@ -38,10 +38,12 @@ class PassportDecoder(Decoder):
                 self.df[Passport.TYPE.value] = self.df[Passport.NUMBER.value].astype(str).apply(self.find_passport)
 
             if Passport.SERIES.value in self.df.columns:
+                self.df[Passport.SERIES.value] = self.df[Passport.SERIES.value].astype(str).apply(self.truncate_floated)
                 self.df[Passport.SERIES.value] = self.df[Passport.SERIES.value].astype(str).apply(self.format_passport_series)
                 self.df[Passport.REGION.value] = self.df[Passport.SERIES.value].astype(str).apply(lambda x: REG_REG.get(x[:2], 'UNKNOWN'))
 
             self._clean_up_passport_data()
+
         except Exception as ex:
             lg.warning('Could not decode passport information')
             lg.error(f'Traceback: {ex}')
@@ -60,7 +62,7 @@ class PassportDecoder(Decoder):
             lg.info('Checking for zeroes in [passport_num]..')
             self.df[Passport.NUMBER.value] = self.df[Passport.NUMBER.value].astype(str).apply(lambda row: self.add_cumulative_zeroes(row, 6))
             lg.info('Seeking nulls in [passport_org]..')
-            self.df[Passport.ORGANIZATION.value] = self.df[Passport.ORGANIZATION.value].apply(lambda x: '' if x in ['null', 'NULL'] else x)
+            self.df[Passport.ORGANIZATION.value] = self.df[Passport.ORGANIZATION.value].apply(self.fill_nans)
         except Exception:
             lg.warn('Could not drop nulls in [passport_org]')
             pass
@@ -95,6 +97,19 @@ class PassportDecoder(Decoder):
             passport_series = row[:4]
             passport_num = row[4:]
             return pd.Series([passport_series, passport_num])
+
+    @staticmethod
+    def truncate_floated(row: str) -> str:
+        """
+        Truncate floated number in passport series to string
+        """
+        row = str(row)
+        if isinstance(row, str):
+            if row.endswith('.0'):
+                row = row.replace('.0', '')
+            if row == 'nan':
+                row = ''
+        return row
 
     @staticmethod
     def split_passport(row: str) -> pd.Series:
@@ -148,7 +163,9 @@ class PassportDecoder(Decoder):
 
     @staticmethod
     def format_passport_series(row: str) -> str:
-        '''Format passport series from 5555 to 55 55'''
+        """
+        Format passport series from 5555 to 55 55
+        """
         if isinstance(row, str):
             if row == "":
                 return row
@@ -159,3 +176,13 @@ class PassportDecoder(Decoder):
                 return f"{row[:2]} {row[2:]}"
             elif len(row) > 4:
                 return row
+
+    @staticmethod
+    def fill_nans(row: str) -> str:
+        """
+        Fill NANs with empty string
+        """
+        if str(row) == ' null' or str(row) == 'nan':
+            return ''
+        else:
+            return str(row).replace('nan| null|None|NULL|Null', '')

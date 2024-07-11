@@ -31,23 +31,25 @@ class PersonDecoder(Decoder):
         if NameVariants.FIO.value in self.df.columns:
             lg.info('[fio_full] found in columns, splitting names.')
             try:
-                self.df[[Person.SURNAME.value, Person.NAME.value, Person.LASTNAME.value]] = self.df[NameVariants.FIO.value].str.split(' ', expand=True)
+                names = self.df[NameVariants.FIO.value].str.split(' ', n=4, expand=True)
+                names.columns = [Person.NAME.value, Person.SURNAME.value, Person.LASTNAME.value, Person.ADDNAME.value]
+                self.df = pd.concat([self.df, names], axis=1)
+                lg.info("Names split successfully")
             except ValueError as e:
-                lg.info(f'Error splitting [fio_full]: {e}')
-                lg.info('Trying to solve the problem...')
-                names = self.df[NameVariants.FIO.value].str.split(' ')  
-                names = names.apply(lambda x: [i for i in x if i != ''])
-                self.df[[Person.SURNAME.value, Person.NAME.value, Person.LASTNAME.value]] = pd.DataFrame(names.tolist(), columns=[Person.NAME.value, Person.SURNAME.value, Person.LASTNAME.value])
-                lg.info("Problem solved.")
+                lg.warning(f"Error splitting [fio_full]: {e}")
+                lg.warning("Skipping data...")
+                pass
         if NameVariants.IFO.value in self.df.columns:
-            lg.info('[ifo_full] found in columns, splitting names.')
+            lg.info('[ifo_full] found in columns, splitting names...')
             try:
-                self.df[[Person.NAME.value, Person.SURNAME.value, Person.LASTNAME.value]] = self.df[NameVariants.IFO.value].str.split(' ', expand=True)
+                names = self.df[NameVariants.IFO.value].str.split(' ', n=5, expand=True)
+                names.columns = [Person.NAME.value, Person.SURNAME.value, Person.LASTNAME.value, Person.ADDNAME.value, Person.POSTFIX.value]
+                self.df = pd.concat([self.df, names], axis=1)
+                lg.info("Names split successfully")
             except ValueError as e:
-                lg.info(f'Error splitting [ifo_full]: {e}')
-                names = self.df[NameVariants.IFO.value].str.split(' ').apply(lambda x: x[:3] + x[4:] if len(x) > 3 else x)
-                self.df[[Person.NAME.value, Person.SURNAME.value, Person.LASTNAME.value]] = pd.DataFrame(names.tolist(), columns=[Person.NAME.value, Person.SURNAME.value, Person.LASTNAME.value])
-                lg.info('Trying to solve the problem...')
+                lg.warning(f"Error splitting [ifo_full]: {e}")
+                lg.warning("Skipping data...")
+                pass
         return self.df
 
     def _sex_finder(self) -> pd.DataFrame:
@@ -72,6 +74,7 @@ class PersonDecoder(Decoder):
             self.df[Person.MAIL.value] = self.df[Person.MAIL.value].str.lower()
             self.df[Person.MAIL.value] = self.df[Person.MAIL.value].apply(lambda x: '' if x == 'не задано' else x)
             self.df[Person.MAIL.value] = self.df[Person.MAIL.value].apply(lambda x: '' if x in ['null', 'NULL'] else x)
+            self.df[Person.MAIL.value] = self.df[Person.MAIL.value].apply(self.fill_nans)
         if 'mails' in self.df.columns:
             lg.info('Found [mails] column (MULTIPLE). applying multiple mapping...')
             self.df = self.df.apply(self.split_mail, axis=1)
@@ -106,3 +109,15 @@ class PersonDecoder(Decoder):
             if len(num) > i:
                 row[f'm{i+1}'] = num.strip()
         return row
+
+    @staticmethod
+    def fill_nans(row: str) -> str:
+        """
+        Fill NANs with empty string
+        """
+        if str(row) == ' null':
+            return ''
+        elif str(row) == 'nan':
+            return ''
+        else:
+            return str(row).replace('nan| null|None|NULL|Null', '')

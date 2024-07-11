@@ -83,18 +83,16 @@ class PhoneDecoder(Decoder):
         return '\t'
 
     @staticmethod
-    def split_phone_numbers(row: str, delimiter: str) -> str:
-        numbers_count = row[Phones.MULTIPLE.value]
-        split_numbers = numbers_count.split(delimiter)
-        for i, num in enumerate(split_numbers):
-            if len(num) > i:
-                row[f'p{i+1}'] = num.strip()
-        return row
+    def split_phone_numbers(row: str, delimiter: str) -> List[str]:
+        splitted_numbers = row.split(delimiter)
+        return [num.strip() for num in splitted_numbers]
 
     @staticmethod
     def phone_numbers(row):
         try:
             row = row.replace(' ', '')
+            if row.endswith('.0'):
+                row = row.replace('.0', '')
             phone_number = pn.parse(row, 'CH')
             fmt_number = pn.format_number(phone_number, pn.PhoneNumberFormat.E164)
             fmt_number = fmt_number[1:]
@@ -123,22 +121,27 @@ class PhoneParser(Decoder):
     def prepare(self) -> None:
         for column in self.columns:
             self.df[column] = self.df[column].astype(str)
-        
+    
     def parse(self) -> pd.DataFrame:
         if self.multiple_phones:
             self._multiple_strategy()
         if self.single_phones:
             self._single_strategy()
+        self.df = self._drop_nulls()
         return self.df
 
     def _multiple_strategy(self) -> None:
-        delimiters = unwrap(self._delimiters, None)
+        delimiters = self._delimiters()
         if delimiters:
-            lg.info('Delimiters found')
+            lg.info('Delimiters found.')
             for phones_column, delimiter in delimiters.items():
-                self.df[phones_column] = self.df[phones_column].apply(
-                    lambda row: self.split_phone_numbers(row, delimiter=delimiter, column=phones_column)
-                    )
+                result = self.df[phones_column].apply(lambda row: self.split_phone_numbers(row, delimiter))
+                max_len = max(len(x) for x in result)
+                for i in range(max_len):
+                    self.df[f'{phones_column}|p{i+1}'] = result.apply(lambda x: x[i] if i < len(x) else None)
+        lg.info("Phones created.")
+        self._single_after_multiple()
+        lg.info("Phones submerged.")
 
     def _single_strategy(self) -> None:
         for phone in self.single_phones:
@@ -146,6 +149,15 @@ class PhoneParser(Decoder):
             self.df[[f'{phone}_code', f'{phone}_body']] = self.df[phone].apply(
                 lambda row: pd.Series(self.format_phones(row))
                 )
+
+    def _single_after_multiple(self) -> None:
+        new_cols = {}
+        for col in self.df.columns:
+            if re.match(r"^phones_\d+|p\d+", col):
+                self.df[col] = self.df[col].apply(self.find)
+                new_cols[f'{col}_code'] = self.df[col].apply(lambda row: self.format_phones(row)[0])
+                new_cols[f'{col}_body'] = self.df[col].apply(lambda row: self.format_phones(row)[1])
+        self.df = pd.concat([self.df, pd.DataFrame(new_cols)], axis=1)
             
     def _delimiters(self) -> Dict[str, str]:
         if self.multiple_phones is None:
@@ -173,8 +185,22 @@ class PhoneParser(Decoder):
         single_phones: list = [col for col in columns if col.startswith('p') and len(col) == 2]
         return multiple_phones, single_phones
 
+    def _drop_nulls(self) -> pd.DataFrame:
+        for col in self.df.columns:
+            if col.startswith("phones_"):
+                self.df[col] = self.df[col].apply(self.repl)
+        return self.df
+
+    def repl(self, row: str) -> str:
+        if pd.isna(row) or row in ['nan', 'Нет']:
+            return ''
+        return row
+
     @staticmethod
     def find(row: str) -> str:
+        row = str(row)
+        if row.endswith('.0'):
+            row = row.replace('.0', '')
         try:
             phone_number: str = pn.parse(row, "RU")
             if phone_number:
@@ -210,13 +236,9 @@ class PhoneParser(Decoder):
         return '\t'
 
     @staticmethod
-    def split_phone_numbers(row: str, delimiter: str, column: str) -> str:
-        numbers = row[column]
-        splitted_numbers = numbers.split(delimiter)
-        for i, num in enumerate(splitted_numbers):
-            if len(num) > i:
-                row[f'{column}|p{i+1}'] = num.strip()
-        return row
+    def split_phone_numbers(row: str, delimiter: str) -> List[str]:
+        splitted_numbers = row.split(delimiter)
+        return [num.strip() for num in splitted_numbers]
     
     @staticmethod
     def format_phones(row: str) -> tuple:

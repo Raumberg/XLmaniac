@@ -43,7 +43,7 @@ class DebtDecoder(Decoder):
         self.df[Debt.TOTAL_SUM.value] = (self.df.get(Debt.FINAL_CURRENT.value, 0)) + (self.df.get(Debt.FINAL_CURRENT_PERCENT.value, 0)) + (self.df.get(Debt.OVERDUE.value, 0)) + (self.df.get(Debt.OVERDUE_PERCENT.value, 0)) + (self.df.get(Debt.FINES.value, 0)) + (self.df.get(Debt.COMISSIONS.value, 0)) + (self.df.get(Debt.STATE_DUTY.value, 0))
 
     def _calculate_total_sum_without_fcd_and_fcp(self) -> None:
-        lg.info('[current_debt] and [current_percent] not found in columns, applying FULL_COLLECT scheme...')
+        lg.info('[current_debt] and [current_percent] not found in columns, applying scheme...')
         self.df[Debt.TOTAL_SUM.value] = self.df.get(Debt.OVERDUE.value, 0) + (self.df.get(Debt.OVERDUE_PERCENT.value, 0)) + (self.df.get(Debt.COMISSIONS.value, 0)) + (self.df.get(Debt.FINES.value, 0))
 
     def _calculate_total_sum_with_current_debt_and_percent(self) -> None:

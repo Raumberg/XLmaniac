@@ -53,7 +53,7 @@ class RegisterDecoder(Decoder):
                             np.where(self.df[Register.PRODUCT_GROUP.value] == 'Автокредит', 'CAR',
                             np.where(self.df[Register.PRODUCT_GROUP.value] == 'Целевой потребительский кредит', 'POS',
                             np.where(self.df[Register.PRODUCT_GROUP.value] == 'Нецелевой потребительский кредит', 'CASH', np.nan))))
-            self.df[Register.PRODUCT_NAME.value] = np.where(self.df[Register.PRODUCT].isin(['CARD']), 'Карточные продукты',
+            self.df[Register.PRODUCT_NAME.value] = np.where(self.df[Register.PRODUCT.value].isin(['CARD']), 'Карточные продукты',
                             np.where(self.df[Register.PRODUCT.value] == 'CAR', 'Автокредит',
                             np.where(self.df[Register.PRODUCT.value] == 'POS', 'Потребительский целевой кредит',
                             np.where(self.df[Register.PRODUCT.value] == 'CASH', 'Потребительский нецелевой кредит', np.nan))))
@@ -72,7 +72,7 @@ class RegisterDecoder(Decoder):
     @staticmethod
     def concat_values(row) -> str:
         '''Value concatenation for client'''
-        return str(row[Register.CLIENT_ID]) + '|' + str(row[Register.CREDIT_ID]) + '|' + str(row[Register.OUTER_ID])
+        return str(row[Register.CLIENT_ID.value]) + '|' + str(row[Register.CREDIT_ID.value]) + '|' + str(row[Register.OUTER_ID.value])
 
     @staticmethod
     def extract_int(row) -> int:

@@ -6,6 +6,8 @@
 /app.log
 /main.spec
 /xlrd.spec
-/mypy_cache
+/.mypy_cache
 /test
 /output.xlsx
+/main.build
+/main.dist

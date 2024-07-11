@@ -18,6 +18,7 @@ class DataframeDecoder(Decoder):
         """
         try:
             self.drop_unnamed()
+            self.replace_null_values()
             #self.drop_null_rows()
         except Exception as ex:
             lg.warning('Could not process dataframe mechanics')
@@ -33,10 +34,13 @@ class DataframeDecoder(Decoder):
     def drop_null_rows(self) -> None:
         '''Dropping rows with null values in the dataframe'''
         lg.info('Dropping rows with null values')
-        self.df.dropna(inplace=True)
+        self.df = self.df.dropna(inplace=True)
+        self.df = self.df.dropna(how=any, axis=0)
+        return self.df
 
-    @staticmethod
-    def replace_null_values(df: pd.DataFrame) -> None:
+    def replace_null_values(self) -> None:
         '''Replacing null values in the dataframe'''
         lg.info('Replacing null values')
-        df = df.apply(lambda x: x.str.replace('null|NULL|Null', '', case=False) if x.dtype == 'object' else x)
+        self.df = self.df.apply(lambda x: x.replace('null|NULL|Null|nan', '') if x.dtype == 'object' else x)
+        self.df = self.df.apply(lambda x: x.fillna('') if x.dtype == 'object' else x.fillna(0))
+        #self.df = self.df.fillna('', inplace=True)

@@ -4,6 +4,8 @@ class Person(Enum):
     NAME = "first_name"
     SURNAME = "surname"
     LASTNAME = "last_name"
+    ADDNAME = "added_name"
+    POSTFIX = "postfix_name"
     SEX = "sex"
     BIRTH_DATE = "birth_date"
     BIRTH_PLACE = "birth_place"
@@ -84,6 +86,11 @@ class PhoneEnum(Enum):
     PHONES_3 = "phones_3"
     PHONES_4 = "phones_4"
     PHONES_5 = "phones_5"
+    PHONES_6 = "phones_6"
+    PHONES_7 = "phones_7"
+    PHONES_8 = "phones_8"
+    PHONES_9 = "phones_9"
+    PHONES_10 = "phones_10"
     P1 = "p1"
     P2 = "p2"
     P3 = "p3"
@@ -94,7 +101,6 @@ class PhoneEnum(Enum):
     P8 = "p8"
     P9 = "p9"
     P10 = "p10"
-
 
 class Clients(Enum):
     DEFAULT = 'default'

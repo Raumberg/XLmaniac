@@ -27,6 +27,23 @@ class RegisterDecoder(Decoder):
             lg.error(f'Traceback: {ex}')
         return self.df
 
+    def process_addresses(self) -> pd.DataFrame:
+        """
+        POST BANK specific method
+        """
+        try:
+            lg.info("Processing post::addr")
+            if Register.ADDRESS_TYPE.value in self.df.columns:
+                temporary_dataframe = self.df[[Register.ID.value, Register.ADDRESS.value, Register.ADDRESS_TYPE.value]].copy()
+                temporary_dataframe['fact'] = np.where(temporary_dataframe[Register.ADDRESS_TYPE.value] == 'Фактический',
+                                                    temporary_dataframe[Register.ADDRESS.value], None)
+                temporary_dataframe['reg'] = np.where(temporary_dataframe[Register.ADDRESS_TYPE.value] == 'Регистрация',
+                                                    temporary_dataframe[Register.ADDRESS.value], None)
+                temporary_dataframe = temporary_dataframe.drop([Register.ADDRESS_TYPE.value, Register.ADDRESS.value], axis=1)
+                return temporary_dataframe
+        except KeyError:
+            raise ValueError(f"Column [{Register.ADDRESS_TYPE.value}] not found in axis")
+
     def _currency(self) -> pd.DataFrame: 
         if Register.CURRENCY.value in self.df.columns:
             lg.info('Mapping currency...')

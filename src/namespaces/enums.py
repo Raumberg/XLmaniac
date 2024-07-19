@@ -48,6 +48,10 @@ class Register(Enum):
     PRODUCT_GROUP = "product_group"
     PRODUCT_NAME = "product_name"
     CURRENCY = "currency"
+    # POST BANK
+    ADDRESS_TYPE = 'address_type'
+    ADDRESS = 'address'
+    ID = 'id'
 
 class Debt(Enum):
     NUM = "credit_num"
@@ -79,6 +83,9 @@ class Phones(Enum):
     REST = "phone_rest"
     CONTACT = "contact_person"
     ZAIM = "phone_num_zaim"
+    TYPE = 'phone_type'
+    RESULT = 'phone_result'
+    PHONE_NUM = "phone_num"
 
 class PhoneEnum(Enum):
     PHONES = "phones"
@@ -91,6 +98,16 @@ class PhoneEnum(Enum):
     PHONES_8 = "phones_8"
     PHONES_9 = "phones_9"
     PHONES_10 = "phones_10"
+    PHONES_11 = "phones_11"
+    PHONES_12 = "phones_12"
+    PHONES_13 = "phones_13"
+    PHONES_14 = "phones_14"
+    PHONES_15 = "phones_15"
+    PHONES_16 = "phones_16"
+    PHONES_17 = "phones_17"
+    PHONES_18 = "phones_18"
+    PHONES_19 = "phones_19"
+    PHONES_20 = "phones_20"
     P1 = "p1"
     P2 = "p2"
     P3 = "p3"
@@ -101,7 +118,27 @@ class PhoneEnum(Enum):
     P8 = "p8"
     P9 = "p9"
     P10 = "p10"
+    P11 = "p11"
+    P12 = "p12"
+    P13 = "p13"
+    P14 = "p14"
+    P15 = "p15"
+    P16 = "p16"
+    P17 = "p17"
+    P18 = "p18"
+    P19 = "p19"
+    P20 = "p20"
 
 class Clients(Enum):
     DEFAULT = 'default'
     POST = 'post'
+
+class Datasets(Enum):
+    CTR = 'contracts'
+    TLF = 'telephones'
+    ADDR = 'addresses'
+
+class Sheets(Enum):
+    CONTRACTS = 'Договоры'
+    TELEPHONES = 'Телефоны'
+    ADDRESSES = 'Адреса'

@@ -1,21 +1,12 @@
 import flet as ft
 from flet import *
+
 import random
 import asyncio
-
-import pandas as pd
-import os
-import pandas as pd
 import logging
 from win10toast import ToastNotifier
 
-from time import sleep
-
-#from src.logics import *
-#from src.pochta import *
-#from src.phones import *
-
-from src import entry
+from src.logics import entry
 
 def btn_clck(e):
     if CB.value:

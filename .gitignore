@@ -11,3 +11,5 @@
 /output.xlsx
 /main.build
 /main.dist
+/src/assets
+/src/__pycache__

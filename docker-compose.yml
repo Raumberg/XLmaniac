@@ -7,3 +7,8 @@ services:
     - "8080:8080"
   environment:
     - FLET_APP_ADDRESS=0.0.0.0
+  volumes:
+    - ./assets:/app/assets
+
+volumes:
+  assets-data:

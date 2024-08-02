@@ -4,9 +4,9 @@ import phonenumbers as pn
 import re
 from typing import List, Tuple, Dict
 
-from src.logics.interfaces.decoders import Decoder
-from src.logics.namespaces.enums import Phones, Clients, PhoneEnum, Register
-from src.logics.functions.std import expect, unwrap, Some
+from logics.interfaces.decoders import Decoder
+from logics.namespaces.enums import Phones, Clients, PhoneEnum, Register
+from logics.functions.std import expect, unwrap, Some
 
 class PhoneParser(Decoder):
     def __init__(self, dataframe: pd.DataFrame) -> None:

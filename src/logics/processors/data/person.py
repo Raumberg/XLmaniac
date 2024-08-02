@@ -2,9 +2,9 @@ import pandas as pd
 import numpy as np
 import logging as lg
 
-from src.logics.interfaces.decoders import Decoder
-from src.logics.namespaces.enums import Person, NameVariants
-from src.logics.functions.std import expect, NullException
+from logics.interfaces.decoders import Decoder
+from logics.namespaces.enums import Person, NameVariants
+from logics.functions.std import expect, NullException
 
 class PersonDecoder(Decoder):
     def __init__(self, dataframe: pd.DataFrame) -> None:

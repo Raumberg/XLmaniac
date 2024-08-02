@@ -1,17 +1,17 @@
 import pandas as pd
 import logging as lg
 
-from src.logics.namespaces.namespace import *
-from src.logics.interfaces.xl import DataProcessorProtocol
+from logics.namespaces.namespace import *
+from logics.interfaces.xl import DataProcessorProtocol
 
-from src.logics.processors.data.dates import DateDecoder
-from src.logics.processors.data.debt import DebtDecoder
-from src.logics.processors.data.person import PersonDecoder
-from src.logics.processors.data.passport import PassportDecoder
-from src.logics.processors.data.register import RegisterDecoder
-from src.logics.processors.data.phones import PhoneParser, Clients
-from src.logics.processors.data.dataframe import DataframeDecoder
-from src.logics.namespaces.enums import Sheets, Datasets
+from logics.processors.data.dates import DateDecoder
+from logics.processors.data.debt import DebtDecoder
+from logics.processors.data.person import PersonDecoder
+from logics.processors.data.passport import PassportDecoder
+from logics.processors.data.register import RegisterDecoder
+from logics.processors.data.phones import PhoneParser, Clients
+from logics.processors.data.dataframe import DataframeDecoder
+from logics.namespaces.enums import Sheets, Datasets
 
 class DataProcessor(DataProcessorProtocol):
     def __init__(self):

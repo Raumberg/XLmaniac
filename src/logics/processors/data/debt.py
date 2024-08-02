@@ -1,8 +1,8 @@
 import pandas as pd
 import logging as lg
 
-from src.logics.interfaces.decoders import Decoder
-from src.logics.namespaces.enums import  Debt, Register
+from logics.interfaces.decoders import Decoder
+from logics.namespaces.enums import  Debt, Register
 
 class DebtDecoder(Decoder):
     def __init__(self, dataframe: pd.DataFrame) -> None:

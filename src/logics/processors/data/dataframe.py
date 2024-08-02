@@ -1,7 +1,7 @@
 import pandas as pd
 import logging as lg
 
-from src.logics.interfaces.decoders import Decoder
+from logics.interfaces.decoders import Decoder
 
 class DataframeDecoder(Decoder):
     def __init__(self, dataframe: pd.DataFrame) -> None:

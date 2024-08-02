@@ -3,9 +3,9 @@ import os
 import json
 import logging as lg
 
-from src.logics.interfaces.xl import FileReaderProtocol
-from src.logics.interfaces.paths import Path, Extension
-from src.logics.namespaces.enums import Sheets
+from logics.interfaces.xl import FileReaderProtocol
+from logics.interfaces.paths import Path, Extension
+from logics.namespaces.enums import Sheets
 
 XLSX_EXTENSION = Extension.XLSX.value
 CSV_EXTENSION = Extension.CSV.value

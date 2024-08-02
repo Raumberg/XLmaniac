@@ -3,9 +3,9 @@ import numpy as np
 import logging as lg
 import re
 
-from src.logics.interfaces.decoders import Decoder
-from src.logics.namespaces.namespace import Namespace, CARD_GROUP
-from src.logics.namespaces.enums import Register
+from logics.interfaces.decoders import Decoder
+from logics.namespaces.namespace import Namespace, CARD_GROUP
+from logics.namespaces.enums import Register
 
 class RegisterDecoder(Decoder):
     def __init__(self, dataframe: pd.DataFrame) -> None:

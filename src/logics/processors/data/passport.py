@@ -2,9 +2,9 @@ import pandas as pd
 import logging as lg
 from dataclasses import dataclass
 
-from src.logics.namespaces.namespace import REG_REG
-from src.logics.interfaces.decoders import Decoder
-from src.logics.namespaces.enums import Passport, PassportVariants
+from logics.namespaces.namespace import REG_REG
+from logics.interfaces.decoders import Decoder
+from logics.namespaces.enums import Passport, PassportVariants
 
 @dataclass
 class PassportFields:

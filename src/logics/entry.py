@@ -1,6 +1,7 @@
 import logging as lg
+import pathlib
 
-from .processors.core.readers import FileReader
+from .processors.core.readers import FileReader, PathReader
 from .processors.core.data import DataProcessor
 from .processors.core.writers import DataWriter
 from .namespaces.enums import Datasets
@@ -13,11 +14,13 @@ def execute() -> None:
     """
     lg.info('Executing |main|')
     try:
-        path = r"C:\Users\nikita.shestopalov\Documents\PY\conture"
-        file = r"post"
+        path = r'C:\Users\nikita.shestopalov\Documents\PY\xlord\src\assets\uploads'
+        file = PathReader(path).get_recent_file()
         extension = r".xlsx"
 
-        file_reader = FileReader(path, file, extension)
+        lg.info(file)
+
+        file_reader = FileReader(file)
         data_processor = DataProcessor()
         data_writer = DataWriter()
 

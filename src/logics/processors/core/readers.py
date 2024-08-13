@@ -2,6 +2,7 @@ import pandas as pd
 import os
 import json
 import logging as lg
+import pathlib
 
 from logics.interfaces.xl import FileReaderProtocol
 from logics.interfaces.paths import Path, Extension
@@ -12,13 +13,11 @@ CSV_EXTENSION = Extension.CSV.value
 JSON_EXTENSION = Extension.JSON.value
 
 class FileReader(FileReaderProtocol):
-    def __init__(self, path: Path.PATH, file: Path.FILE, ext: Path.EXTENSION):
+    def __init__(self, path: pathlib.Path):
         self.path = path
-        self.file = file
-        self.ext = ext
 
-    def _get_file_path(self) -> str:
-        return os.path.join(self.path, f"{self.file}{self.ext}")
+    # def _get_file_path(self) -> str:
+    #     return os.path.join(self.path, f"{self.file}{self.ext}")
 
     def _read_excel_file(self, file_path: str) -> dict:
         try:
@@ -55,9 +54,10 @@ class FileReader(FileReaderProtocol):
             lg.error(f"Error reading JSON file: {e}")
 
     def read_file(self) -> pd.DataFrame | dict:
-        file_path = self._get_file_path()
+        file_path = pathlib.Path(self.path)
         if os.path.isfile(file_path):
-            match self.ext:
+            ext = file_path.suffix.lower()
+            match ext:
                 case Extension.XLSX.value:
                     return self._read_excel_file(file_path)
                 case Extension.CSV.value:
@@ -65,6 +65,24 @@ class FileReader(FileReaderProtocol):
                 case Extension.JSON.value:
                     return self._read_json_file(file_path)
                 case _:
-                    raise NotImplementedError(f"File extension {self.ext} not supported")
+                    raise NotImplementedError(f"File extension not supported")
         else:
-            raise FileNotFoundError(f"File {self.file}{self.ext} not found in {self.path}")
+            raise FileNotFoundError(f"File not found in {self.path}")
+
+class PathReader():
+    def __init__(self, path: pathlib.Path):
+        self.path = pathlib.Path(path)
+    
+    def get_recent_file(self) -> str:
+        recent_file = None
+        recent_time = 0
+        for file in self.path.iterdir():
+            if file.is_file():
+                file_time = os.stat(file).st_mtime
+                if file_time > recent_time:
+                    recent_time = file_time
+                    recent_file = file
+        if recent_file:
+            return str(recent_file)
+        else:
+            return ""

@@ -1,18 +1,55 @@
 import flet as ft
 from flet import *
+from flet.fastapi import flet_fastapi
+from fastapi import FastAPI, HTTPException
+from fastapi.responses import FileResponse
 
-import random
 import asyncio
 import logging
 import os
+from pathlib import Path
+from contextlib import asynccontextmanager
 
 from styles import *
 from functions import *
 from instances import *
 from basement import *
+from statics import downloads
 
 os.environ['FLET_SECRET_KEY'] = 'secret'
 
+# @asynccontextmanager
+# async def lifespan(app: FastAPI):
+#     """
+#     Server for FastAPI with FLET
+
+#     Args:
+#         app (FastAPI): FastApi app manager
+#     """
+#     await flet_fastapi.app_manager.start()
+#     yield
+#     await flet_fastapi.app_manager.shutdown()
+
+# app = FastAPI(lifespan=lifespan)
+
+# @app.get(path='/assets/downloads/{file}')
+# def send_file(file: str):
+#     """
+#     Download a file from ./assets/downloads/
+
+#     Args:
+#         file (str): file name
+#     """
+#     path = str(Path.cwd().joinpath(downloads).joinpath(file))
+#     if os.path.exists(path):
+#         return FileResponse(
+#             path=path,
+#             media_type='text/csv',
+#             filename=Path(file).name,
+#             headers={"Content-Disposition": "attachment"}
+#         )
+#     else:
+#         raise HTTPException(status_code=404, detail=f"File '{file}' not found.")
 
 def main(page: ft.Page) -> None:
     page.horizontal_alignment = 'center'
@@ -24,41 +61,80 @@ def main(page: ft.Page) -> None:
 
     lg.info('Page initialized.')
 
-    background = Stack(
-        expand=True,
-        controls=[
-            ANM() for _ in range(150)
-        ],
-    )
+    def route_change(route):
+        page.views.clear()
+        page.views.append(
+            ft.View(
+                "/",
+                [
+                    stack,
+                ],
+            )
+        )
+        if page.route == "/dev":
+            log_text = open('assets/app.log', 'r').readlines()
+            log_entries = [ft.ListTile(title=ft.Text(line.rstrip()), leading=ft.Icon(ft.icons.INFO)) for line in log_text]
+            page.views.append(
+                ft.View(
+                    "/dev",
+                    [
+                        ft.AppBar(title=ft.Text("Logs!"), bgcolor=ft.colors.SURFACE_VARIANT),
+                        ft.ListView(expand=True, auto_scroll=True, controls=log_entries),
+                        ft.ElevatedButton("Go back <-", on_click=lambda _: page.go("/"), height=40, width=120),
+                    ],
+                )
+            )
+        page.update()
+
+    def view_pop(view):
+        page.views.pop()
+        top_view = page.views[-1]
+        page.go(top_view.route)
 
     stack = Stack(
         expand=True,
         controls=[
-            background,
             ft.Column(
                 alignment='center',
                 horizontal_alignment='center',
                 controls=[
                     ft.Row(
                         alignment='center',
-                        controls=[Body(),]
+                        controls=[
+                            Body(page),
+                            ]
+                    ),
+                    ft.Column(
+                        alignment=ft.MainAxisAlignment.CENTER,
+                        controls=[
+                            ft.ElevatedButton("Show logs", on_click=lambda _: page.go("/dev"), height=40, width=120)
+                        ]
                     )
                 ]
             )
         ],
     )
+    # page.add(ft.Text(f"Initial Route: {page.route}"))
     page.add(stack, )
     page.overlay.append(file_picker)
+    page.overlay.append(file_saver)
+    page.on_route_change = route_change
+    page.on_view_pop = view_pop
     page.update()
 
-    async def run():
-        await asyncio.gather(
-            *(item.anm_animate() for item in background.controls),
-        )
-
-    #asyncio.run(run())
-
 if __name__ == '__main__':
+    logfile_path = 'assets/app.log'
     lg = logging.getLogger(__name__)
-    logging.basicConfig(filename='app.log', level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    ft.app(target=main, assets_dir='assets', upload_dir='assets/uploads')
+    logging.basicConfig(filename=logfile_path, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+    ft.app(target=main, assets_dir='assets', upload_dir='assets/uploads', view=ft.WEB_BROWSER)
+
+    # from flet.fastapi import FletApp
+
+    # app.mount(path='/', 
+    #           app=flet_fastapi.app(
+    #               main, 
+    #               assets_dir='assets', 
+    #               upload_dir='assets/uploads', 
+    #               view=ft.WEB_BROWSER
+    #               )
+    #         )

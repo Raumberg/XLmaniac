@@ -83,7 +83,7 @@ class Body(ft.Container):
                 ft.Row(controls=[
                     ft.Icon(name=ft.icons.CLOUD_DOWNLOAD, size=60),
                     ft.ElevatedButton('Download', 
-                            on_click=save_request_file,
+                            on_click=download_file,
                             height=60, 
                             width=120,)
                 ]),

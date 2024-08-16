@@ -7,6 +7,7 @@ import io
 from statics import *
 
 def clear_logs(e):
+    e.page.show_snack_bar(ft.SnackBar(ft.Text("Clearing logs...")))
     with open('assets/app.log', 'w') as f:
         pass
 
@@ -23,25 +24,11 @@ def upload_files(e: ft.FilePickerResultEvent):
             )
         lg.info(f"[Flet] Uploaded files: {upload_list}")
         file_picker.upload(upload_list)
-        #
+        
         recent_upload_text.value = e.files[-1].name
         recent_upload_text.update()
 
-def download_file(e: ft.FilePickerResultEvent):
-    lg.info("[Flet] __Call__ fn download")
-    save_loc = e.path
-    if save_loc:
-        try:
-            with open(save_loc, 'wb') as file:
-                file.write("test")
-            lg.info(f"[Flet] Downloaded files: {e.files}")
-        except Exception as e:
-            lg.warning("[Flet] Err saving file")
-            lg.error(e)
-        # page.update()
-
-    # if e.files is not None:
-    #     file_saver.save_file(initial_directory='assets/downloads/', file_name='test.xlsx')
+    e.page.show_snack_bar(ft.SnackBar(ft.Text("Files uploaded.")))
 
 def request_file(file_name):
     url = f"http://localhost:8080/assets/downloads/{file_name}"
@@ -73,33 +60,25 @@ def delete_files(e):
         if os.path.isfile(file_path):
             os.remove(file_path)
             lg.info(f'[FLET] deleted {file_path} by __Call__ fn delete_files')
+
     for file in os.listdir(downloads):
         file_path = os.path.join(downloads, file)
         if os.path.isfile(file_path):
             os.remove(file_path)
             lg.info(f'[FLET] deleted {file_path} by __Call__ fn delete_files')
 
-# def download_file(e):
-#     try:
-#         file_name = r'output.xlsx'
-#         file_path = 'assets/downloads/' + file_name
-#         e.control.page.update()
-#         e.control.page.add(ft.Link(file_name, href=file_path, target='_blank'))
-#     except Exception as e:
-#         e.show_snack_bar(ft.SnackBar(ft.Text('No files available for download')))
-#         lg.info(e)
+    e.page.show_snack_bar(ft.SnackBar(ft.Text("Files deleted.")))
 
-# def page_download(page: ft.Page):
-    # def download(e):
-    #     page.launch_url("assets/downloads/output.xlsx")
-    #     lg.info('[Flet] Downloaded file from assets/downloads')
-
-#     return ft.ElevatedButton('Download', 
-#                             # on_click=download,
-#                             on_click=open_file_saver,
-#                             height=60, 
-#                             width=120,)
-
+def download_file(e) -> None:
+    try:
+        lg.info("[Flet] __Call__ Download fn")
+        file_name = r'output.xlsx'
+        file_path = 'downloads/' + file_name
+        e.page.launch_url(f"/{file_path}")
+        e.page.show_snack_bar(ft.SnackBar(ft.Text("File upload successful.")))
+    except Exception as e:
+        e.page.show_snack_bar(ft.SnackBar(ft.Text('No files available for download.')))
+        lg.info(e)
 
 file_picker = ft.FilePicker(on_result=upload_files)
 file_saver = ft.FilePicker(on_result=download_file)

@@ -7,9 +7,41 @@ def btn_clck(e):
     lg.info("Executing logics.")
     try:
         entry.execute()
+        e.page.show_snack_bar(ft.SnackBar(ft.Text("Parsing completed.")))
     except Exception as global_error:
         lg.error(f"Err in button's core. {global_error}")
+        e.page.show_snack_bar(ft.SnackBar(ft.Text("Error occurred. Please check the logs for more information.")))
     lg.info('Program completed.')
+
+# def close_dialog(e):
+#     e.page.dialog = None
+
+# def btn_clck(e):
+#     lg.info("Executing logics.")
+#     try:
+#         entry.execute()
+#         dialog = ft.AlertDialog(
+#             modal=True,
+#             title=ft.Text("Success!"),
+#             content=ft.Text("Request completed successfully!"),
+#             actions=[
+#                 ft.ElevatedButton(text="OK", on_click=close_dialog),
+#             ]
+#         )
+#         e.page.dialog = dialog
+#     except Exception as global_error:
+#         lg.error(f"Err in button's core. {global_error}")
+#         dialog = ft.AlertDialog(
+#             modal=True,
+#             title=ft.Text("Error!"),
+#             content=ft.Text("Error occurred. Please check the logs for more information."),
+#             actions=[
+#                 ft.ElevatedButton(text="OK", on_click=close_dialog)
+#             ]
+#         )
+#         e.page.dialog = dialog
+#     lg.info('Program completed.')
+
 
 input_style = {
     'height': 38,

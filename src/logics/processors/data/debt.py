@@ -50,7 +50,7 @@ class DebtDecoder(Decoder):
         lg.info('[current_debt] and [current_percent] found in columns, calculating scheme...')
         self.df[Debt.CURRENT_CALCULATED.value] = self.df[Debt.CURRENT.value] - self.df.get(Debt.OVERDUE.value, 0)
         self.df[Debt.CURRENT_PERCENT_CALCULATED.value] = self.df[Debt.CURRENT_PERCENT.value] - self.df.get(Debt.OVERDUE_PERCENT.value, 0)
-        self.df[Debt.TOTAL_SUM.value] = (self.df.get(Debt.CURRENT_CALCULATED.value, 0)) + self.df.get(Debt.OVERDUE.value, 0) + self.df.get(Debt.CURRENT_PERCENT_CALCULATED.value, 0) + (self.df.get(Debt.OVERDUE_PERCENT.value, 0)) + (self.df.get(Debt.COMISSIONS.value, 0)) + (self.df.get(Debt.FINES.value, 0))
+        self.df[Debt.TOTAL_SUM.value] = self.df.get(Debt.CURRENT_CALCULATED.value, 0) + self.df.get(Debt.OVERDUE.value, 0) + self.df.get(Debt.CURRENT_PERCENT_CALCULATED.value, 0) + (self.df.get(Debt.OVERDUE_PERCENT.value, 0)) + (self.df.get(Debt.COMISSIONS.value, 0)) + (self.df.get(Debt.FINES.value, 0))
 
     def _set_scheme(self) -> None:
         self.df[Register.COLLECT_SCHEME.value] = self.df.apply(self.set_scheme, axis=1)

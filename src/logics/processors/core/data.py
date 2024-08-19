@@ -84,6 +84,7 @@ class DataProcessor(DataProcessorProtocol):
     def _clear_dataframe(self, df: pd.DataFrame) -> pd.DataFrame:
         lg.info(f"Cleaning resulting dataframe")
         decoded_df = DataframeDecoder(df).decode()
+        decoded_df = decoded_df.drop_duplicates(keep='last', subset=['fact', 'reg'])
         if decoded_df is None:
             raise ValueError(f"Cleaner returned Null")
         lg.info(f"Cleaning finished")

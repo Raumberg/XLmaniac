@@ -6,6 +6,7 @@ from .processors.core.data import DataProcessor
 from .processors.core.writers import DataWriter
 from .namespaces.enums import Datasets
 from .interfaces.paths import Extension
+from .entities.program import program
 
 def execute() -> None:
     """
@@ -14,9 +15,8 @@ def execute() -> None:
     """
     lg.info('Executing |main|')
     try:
-        path = r'C:\Users\nikita.shestopalov\Documents\PY\xlord\src\assets\uploads'
-        file = PathReader(path).get_recent_file()
-        extension = r".xlsx"
+        path = program.input_path
+        file = PathReader(path).get_file()
 
         lg.info(file)
 

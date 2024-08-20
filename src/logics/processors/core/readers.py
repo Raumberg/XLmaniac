@@ -7,6 +7,7 @@ import pathlib
 from logics.interfaces.xl import FileReaderProtocol
 from logics.interfaces.paths import Path, Extension
 from logics.namespaces.enums import Sheets
+from logics.entities.program import program
 
 XLSX_EXTENSION = Extension.XLSX.value
 CSV_EXTENSION = Extension.CSV.value
@@ -15,9 +16,6 @@ JSON_EXTENSION = Extension.JSON.value
 class FileReader(FileReaderProtocol):
     def __init__(self, path: pathlib.Path):
         self.path = path
-
-    # def _get_file_path(self) -> str:
-    #     return os.path.join(self.path, f"{self.file}{self.ext}")
 
     def _read_excel_file(self, file_path: str) -> dict:
         try:
@@ -72,6 +70,9 @@ class FileReader(FileReaderProtocol):
 class PathReader():
     def __init__(self, path: pathlib.Path):
         self.path = pathlib.Path(path)
+
+    def __call__(self):
+        lg.info(f"PathReader::Path::{self.path}")
     
     def get_recent_file(self) -> str:
         recent_file = None
@@ -86,3 +87,6 @@ class PathReader():
             return str(recent_file)
         else:
             return ""
+
+    def get_file(self) -> str:
+        return self.path

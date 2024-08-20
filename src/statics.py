@@ -1,6 +1,8 @@
 import os
-import flet as ft
 from functions import *
+
+UPLOAD_PATH = None
+DOWNLOAD_PATH = None
 
 uploads = 'assets/uploads'
 downloads = 'assets/downloads'

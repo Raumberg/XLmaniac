@@ -1,16 +1,18 @@
 import pandas as pd
+import logging as lg
 import os
 
 from logics.interfaces.xl import DataWriterProtocol
 from logics.interfaces.paths import Extension 
-from logics.entities.program import ProgramPaths
+from logics.entities.program import program
 
 class DataWriter(DataWriterProtocol):
-    def __init__(self, output_path: str = ProgramPaths.output_path):
+    def __init__(self, output_path: str = program.output_path):
         self._output_path = output_path
 
     def save_file(self, df: pd.DataFrame, method: Extension, name: str) -> None:
         filepath = os.path.join(self._output_path, name)
+        lg.info(f"Saving result to {filepath}..")
         match method:
             case Extension.XLSX:
                 df.to_excel(f'{filepath}.xlsx', sheet_name='Main', index=False, engine='openpyxl')

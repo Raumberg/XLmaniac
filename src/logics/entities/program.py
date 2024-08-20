@@ -1,10 +1,13 @@
 from dataclasses import dataclass
+import pathlib
 
-@dataclass
+@dataclass(frozen=False)
 class ProgramPaths:
-    input_path: str = 'assets/uploads'
-    output_path: str = 'assets/downloads'
+    input_path: str = ""
+    output_path: str = pathlib.Path.home() / "Downloads"
 
 @dataclass
 class ProgramConfig:
     pass
+
+program = ProgramPaths()

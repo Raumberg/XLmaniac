@@ -18,46 +18,32 @@ from statics import downloads
 
 os.environ['FLET_SECRET_KEY'] = 'secret'
 
-# @asynccontextmanager
-# async def lifespan(app: FastAPI):
-#     """
-#     Server for FastAPI with FLET
+# class ServerState:
+#     instance = None
 
-#     Args:
-#         app (FastAPI): FastApi app manager
-#     """
-#     await flet_fastapi.app_manager.start()
-#     yield
-#     await flet_fastapi.app_manager.shutdown()
+#     def __init__(self):
+#         self.upload_path = None
+#         self.download_path = None
 
-# app = FastAPI(lifespan=lifespan)
+#     def __call__(self):
+#         self.logger.info('Server started')
 
-# @app.get(path='/assets/downloads/{file}')
-# def send_file(file: str):
-#     """
-#     Download a file from ./assets/downloads/
-
-#     Args:
-#         file (str): file name
-#     """
-#     path = str(Path.cwd().joinpath(downloads).joinpath(file))
-#     if os.path.exists(path):
-#         return FileResponse(
-#             path=path,
-#             media_type='text/csv',
-#             filename=Path(file).name,
-#             headers={"Content-Disposition": "attachment"}
-#         )
-#     else:
-#         raise HTTPException(status_code=404, detail=f"File '{file}' not found.")
+#     @classmethod
+#     def get_instance(cls):
+#         if cls.instance is None:
+#             cls.instance = cls()
+#         return cls.instance
 
 def main(page: ft.Page) -> None:
+
+    # server_state = ServerState.get_instance()
+
     page.horizontal_alignment = 'center'
     page.vertical_alignment = 'center'
     page.padding = 0
     page.bgcolor = colors.WHITE
-    page.window_width = 1200
-    page.window_height = 1200
+    page.window_width = 1920
+    page.window_height = 1080
 
     lg.info('Page initialized.')
 
@@ -114,7 +100,6 @@ def main(page: ft.Page) -> None:
             )
         ],
     )
-    # page.add(ft.Text(f"Initial Route: {page.route}"))
     page.add(stack, )
     page.overlay.append(file_picker)
     page.overlay.append(file_saver)
@@ -125,16 +110,13 @@ def main(page: ft.Page) -> None:
 if __name__ == '__main__':
     logfile_path = 'assets/app.log'
     lg = logging.getLogger(__name__)
-    logging.basicConfig(filename=logfile_path, level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
-    ft.app(target=main, assets_dir='assets', upload_dir='assets/uploads', view=ft.WEB_BROWSER)
-
-    # from flet.fastapi import FletApp
-
-    # app.mount(path='/', 
-    #           app=flet_fastapi.app(
-    #               main, 
-    #               assets_dir='assets', 
-    #               upload_dir='assets/uploads', 
-    #               view=ft.WEB_BROWSER
-    #               )
-    #         )
+    logging.basicConfig(filename=logfile_path, 
+                        level=logging.INFO, 
+                        format='%(asctime)s - %(levelname)s - %(message)s'
+                        )
+    ft.app(target=main, 
+            assets_dir='assets', 
+            upload_dir='assets/uploads', 
+            view=AppView.FLET_APP,
+            use_color_emoji=True,
+           )

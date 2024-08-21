@@ -105,3 +105,9 @@ textfield_style = {
     'border_color': 'blue',
     'disabled': True
 }
+
+progressring_style = {
+    'width': 20,
+    'height': 20,
+    'stroke_width': 3
+}

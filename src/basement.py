@@ -1,14 +1,9 @@
 import flet as ft
 
 from styles import *
-from functions import *
-from instances import *
+from functions import file_picker, recent_upload_text, text, textbox, get_textfield_path, clear_logs
+from instances import Input, Button
 
-
-TF = TField()  
-CB = CheckBox()
-CB_PH = CheckBoxPH()
-PR = ft.ProgressRing(width=20, height=20, stroke_width=3)
 
 class Body(ft.Container):
     def __init__(self, page: ft.Page, **kwargs) -> None:
@@ -35,7 +30,7 @@ class Body(ft.Container):
                            color='blue', 
                            thickness=3),
                 ft.Row(controls=[
-                    Button('Parse file')
+                    Button('START')
                 ]),
                 ft.Divider(height=8, 
                            color='blue', 
@@ -95,11 +90,11 @@ class Body(ft.Container):
                     #         italic=False,
                     #         selectable=False),
                     # recent_download_text,
-                    tb,
+                    textbox,
                     ft.ElevatedButton(text="Submit", on_click=get_textfield_path),
                 ]),
-                t,
-                ft.Divider(height=150, 
+                text,
+                ft.Divider(height=120, 
                            color='transparent', 
                            thickness=3),
                 ft.Row(controls=[
@@ -122,3 +117,5 @@ class Body(ft.Container):
                         text_align='center')
             ]
         )
+
+

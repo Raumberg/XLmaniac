@@ -5,10 +5,11 @@ import requests
 import pathlib
 
 from logics.entities.program import program
+from statics import LOGFILE
 
 def clear_logs(e):
     e.page.show_snack_bar(ft.SnackBar(ft.Text("Clearing logs...")))
-    with open('assets/app.log', 'w') as f:
+    with open(LOGFILE, 'w') as f:
         pass
 
 def close_dialog(e):
@@ -78,15 +79,14 @@ def open_file_picker(e):
     file_picker.pick_files(allow_multiple=False)
 
 def get_textfield_path(e):
-    t.value = ""
-    lg.info(f"[Flet] textfield value set to: {tb.value}")
+    text.value = ""
+    lg.info(f"[Flet] Textfield value set to: {textbox.value}")
     try:
-        path = pathlib.Path(tb.value)
+        path = pathlib.Path(textbox.value)
         if path.is_dir():
-            program.output_path = tb.value
-            t.value = f"Folder path set to: \n{tb.value}"
+            program.output_path = textbox.value
+            text.value = f"Folder path set to: \n{textbox.value}"
             lg.info("[Flet] Path verified")
-            print(program.output_path)
         else:
             error_dialog = ft.AlertDialog(
                 title=ft.Text("Error"),
@@ -112,14 +112,7 @@ def get_textfield_path(e):
 
 file_picker = ft.FilePicker(on_result=d_upload_files)
 file_saver = ft.FilePicker(on_result=d_download_files)
-file_list = ft.Text("")
-selected_files = ft.Text()
-save_filepath = ft.Text()
-recent_upload_text = ft.TextField(value='', 
-                                  color=ft.colors.BLUE, 
-                                  read_only=True)
-recent_download_text = ft.TextField(value='', 
-                                  color=ft.colors.BLUE, 
-                                  read_only=True)
-t = ft.Text(color=ft.colors.BLUE, size=14, weight=ft.FontWeight.BOLD, italic=True)
-tb = ft.TextField(label="Folder path:", hint_text="Enter folder path")
+file_list, selected_files, save_filepath = ft.Text(), ft.Text(), ft.Text()
+recent_upload_text, recent_download_text = ft.TextField(value='', color=ft.colors.BLUE, read_only=True), ft.TextField(value='', color=ft.colors.BLUE, read_only=True) 
+text = ft.Text(color=ft.colors.BLUE, size=14, weight=ft.FontWeight.BOLD, italic=True)
+textbox = ft.TextField(label="Folder path:", hint_text="Enter folder path")

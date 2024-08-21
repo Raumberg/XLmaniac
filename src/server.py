@@ -1,42 +1,19 @@
 import flet as ft
 from flet import *
-from flet.fastapi import flet_fastapi
-from fastapi import FastAPI, HTTPException
-from fastapi.responses import FileResponse
 
-import asyncio
 import logging
 import os
-from pathlib import Path
-from contextlib import asynccontextmanager
 
 from styles import *
 from functions import *
 from instances import *
 from basement import *
-from statics import downloads
+from statics import LOGFILE
+from themes import LIGHT, DARK
 
 os.environ['FLET_SECRET_KEY'] = 'secret'
 
-# class ServerState:
-#     instance = None
-
-#     def __init__(self):
-#         self.upload_path = None
-#         self.download_path = None
-
-#     def __call__(self):
-#         self.logger.info('Server started')
-
-#     @classmethod
-#     def get_instance(cls):
-#         if cls.instance is None:
-#             cls.instance = cls()
-#         return cls.instance
-
 def main(page: ft.Page) -> None:
-
-    # server_state = ServerState.get_instance()
 
     page.horizontal_alignment = 'center'
     page.vertical_alignment = 'center'
@@ -58,7 +35,7 @@ def main(page: ft.Page) -> None:
             )
         )
         if page.route == "/dev":
-            log_text = open('assets/app.log', 'r').readlines()
+            log_text = open(LOGFILE, 'r').readlines()
             log_entries = [ft.ListTile(title=ft.Text(line.rstrip()), leading=ft.Icon(ft.icons.INFO)) for line in log_text]
             page.views.append(
                 ft.View(
@@ -77,7 +54,16 @@ def main(page: ft.Page) -> None:
         top_view = page.views[-1]
         page.go(top_view.route)
 
-    stack = Stack(
+    def switch_theme(e):
+        if page.theme_mode == ft.ThemeMode.LIGHT:
+            page.theme = DARK
+            page.theme_mode = ft.ThemeMode.DARK
+        else:
+            page.theme = LIGHT
+            page.theme_mode = ft.ThemeMode.LIGHT
+        page.update()
+
+    stack = ft.Stack(
         expand=True,
         controls=[
             ft.Column(
@@ -90,27 +76,29 @@ def main(page: ft.Page) -> None:
                             Body(page),
                             ]
                     ),
-                    ft.Column(
+                    ft.Row(
                         alignment=ft.MainAxisAlignment.CENTER,
                         controls=[
-                            ft.ElevatedButton("Show logs", on_click=lambda _: page.go("/dev"), height=40, width=120)
+                            ft.ElevatedButton("Show logs", on_click=lambda _: page.go("/dev"), height=40, width=120),
+                            ft.Switch("Switch theme", on_change=switch_theme, value=False)
                         ]
-                    )
+                    ),
                 ]
             )
         ],
     )
+
+
+    page.theme_mode = ft.ThemeMode.LIGHT
     page.add(stack, )
     page.overlay.append(file_picker)
-    page.overlay.append(file_saver)
     page.on_route_change = route_change
     page.on_view_pop = view_pop
     page.update()
 
 if __name__ == '__main__':
-    logfile_path = 'assets/app.log'
     lg = logging.getLogger(__name__)
-    logging.basicConfig(filename=logfile_path, 
+    logging.basicConfig(filename=LOGFILE, 
                         level=logging.INFO, 
                         format='%(asctime)s - %(levelname)s - %(message)s'
                         )

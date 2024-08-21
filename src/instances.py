@@ -93,3 +93,11 @@ class TField(ft.TextField):
     def __init__(self):
         super().__init__(**textfield_style)
 
+class PRing(ft.ProgressRing):
+    def __init__(self):
+        super().__init__(**progressring_style)
+
+TF = TField()  
+CB = CheckBox()
+CB_PH = CheckBoxPH()
+PR = PRing()

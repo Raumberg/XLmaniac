@@ -1,6 +1,5 @@
 # Excel Maniac
 ## An application build with pure pandas to automate Excel Registers for company
-Note: Rather unfinished version
 ### The purpose is to prepare a dataset of the clients to serialize/deserialize further loads to a database
 Technologies:
 * Pure pandas implementation
